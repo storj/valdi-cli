@@ -11,8 +11,9 @@ class VolumeManager:
 
     @staticmethod
     def _volume_access_credentials_are_available(volume_name):
-        if Config.GOOFYS_CREDENTIALS_FILE.exists():
-            with open(Config.GOOFYS_CREDENTIALS_FILE, 'r') as f:
+        goofys_credentials_file = Path(Config.GOOFYS_CREDENTIALS_FILE).expanduser()
+        if goofys_credentials_file.exists():
+            with open(goofys_credentials_file, 'r') as f:
                 for line in f:
                     if line.strip() == f'[{volume_name}]':
                         return True
@@ -24,7 +25,8 @@ class VolumeManager:
     def _store_volume_access_credentials(volume_name):
         access_key = input('Enter access key: ')
         secret_key = input('Enter secret access key: ')
-        with open(Config.GOOFYS_CREDENTIALS_FILE, 'a') as f:
+        goofys_credentials_file = Path(Config.GOOFYS_CREDENTIALS_FILE).expanduser()
+        with open(goofys_credentials_file, 'a') as f:
             f.write(f'[{volume_name}]\naws_access_key_id = {access_key}\naws_secret_access_key = {secret_key}\n')
 
     def mount_volume(self, prefix_to_mount, mountpoint):
