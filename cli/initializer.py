@@ -22,6 +22,7 @@ class Initializer:
             new_permissions = current_permissions | stat.S_IXUSR
             os.chmod(file_to_check, new_permissions)
 
-        os.makedirs(Config.GOOFYS_CREDENTIALS_FILE.parent, exist_ok=True)
-        with open(Config.GOOFYS_CREDENTIALS_FILE, 'a'):
-            os.utime(Config.GOOFYS_CREDENTIALS_FILE, None)
+        goofys_credentials_filepath = Path(Config.GOOFYS_CREDENTIALS_FILE)
+        os.makedirs(goofys_credentials_filepath.parent, exist_ok=True)
+        with open(goofys_credentials_filepath, 'a'):
+            os.utime(goofys_credentials_filepath, None)
