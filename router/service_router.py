@@ -19,7 +19,7 @@ class ServiceRouter:
                 if args.cmd == Config.Command.MOUNT.value:
                     volume_manager.mount_volume(args.volume_name, args.mountpoint)
                 elif args.cmd == Config.Command.UNMOUNT.value:
-                    volume_manager.unmount_volume(args.mointpoint)
+                    volume_manager.unmount_volume(args.mountpoint)
                 else:
                     raise RuntimeError(f'Unrecognized command for {args.service} service')
             elif args.service == Config.Service.VM.value:
