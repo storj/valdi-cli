@@ -30,8 +30,10 @@ class VolumeManager:
     def mount_volume(self, prefix_to_mount, mountpoint):
         present_working_dir = Path(__file__)
         goofys_exe = present_working_dir.parent.parent / Config.GOOFYS_EXE_FILE
-        if not Path(mountpoint).is_absolute():
+        mount_point = Path(mountpoint)
+        if not mount_point.is_absolute():
             raise RuntimeError('mountpoint must be a full path')
+        os.makedirs(mount_point, exist_ok=True)
 
         if not self._volume_access_credentials_are_available(prefix_to_mount):
             self._store_volume_access_credentials(prefix_to_mount)
