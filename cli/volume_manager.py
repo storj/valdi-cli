@@ -1,4 +1,5 @@
 import os
+import sys
 import subprocess
 from pathlib import Path
 from config.settings import Config
@@ -34,7 +35,8 @@ class VolumeManager:
         goofys_exe = present_working_dir.parent.parent / Config.GOOFYS_EXE_FILE
         mount_point = Path(mountpoint).expanduser()
         if not mount_point.is_absolute():
-            raise RuntimeError('mountpoint must be a full path')
+            print('mountpoint must be a full path')
+            sys.exit(1)
         os.makedirs(mount_point, exist_ok=True)
 
         if not self._volume_access_credentials_are_available(prefix_to_mount):
@@ -53,7 +55,8 @@ class VolumeManager:
                 check=True
             )
         except subprocess.CalledProcessError as e:
-            raise RuntimeError(f'Error mounting volume: {e.stderr}')
+            print(f'Error mounting volume: {e.stderr}')
+            sys.exit(1)
         finally:
             if original_aws_profile is not None:
                 os.environ['AWS_PROFILE'] = original_aws_profile
@@ -63,7 +66,9 @@ class VolumeManager:
     @staticmethod
     def unmount_volume(mountpoint):
         if not Path(mountpoint).is_absolute():
-            raise RuntimeError('mountpoint must be a full path')
+            print('mountpoint must be a full path')
+            sys.exit(1)
+
         try:
             subprocess.run([
                 'umount',
@@ -72,4 +77,5 @@ class VolumeManager:
                 check=True
             )
         except subprocess.CalledProcessError as e:
-            raise RuntimeError(f'Error unmounting volume: {e.stderr}')
+            print(f'Error unmounting volume: {e.stderr}')
+            sys.exit(1)
