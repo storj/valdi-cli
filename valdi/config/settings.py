@@ -13,7 +13,6 @@ class Config:
     class Service(Enum):
         VOLUME = 'volume'
         INIT = 'init'
-        VM = 'vm'
 
     class VolumeCommand(Enum):
         MOUNT = 'mount'
