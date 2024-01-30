@@ -2,8 +2,8 @@ import os
 import sys
 import subprocess
 from pathlib import Path
-from config.settings import Config
-from cli.authenticator import Authenticator
+from valdi.config.settings import Config
+from valdi.cli.authenticator import Authenticator
 
 
 class VolumeManager:
@@ -32,7 +32,7 @@ class VolumeManager:
 
     def mount_volume(self, prefix_to_mount, mountpoint):
         present_working_dir = Path(__file__)
-        goofys_exe = present_working_dir.parent.parent / Config.GOOFYS_EXE_FILE
+        goofys_exe = present_working_dir.parent.parent.parent / Config.GOOFYS_EXE_FILE
         mount_point = Path(mountpoint).expanduser()
         if not mount_point.is_absolute():
             print('mountpoint must be a full path')

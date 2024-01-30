@@ -2,14 +2,14 @@ import os
 import stat
 import requests
 from pathlib import Path
-from config.settings import Config
+from valdi.config.settings import Config
 
 
 class Initializer:
     @staticmethod
     def initialize():
         present_working_dir = Path(__file__)
-        top_level_dir = present_working_dir.parent.parent
+        top_level_dir = present_working_dir.parent.parent.parent
         file_to_check = top_level_dir / Config.GOOFYS_EXE_FILE
         if not file_to_check.exists():
             response = requests.get(Config.GOOFYS_URL)

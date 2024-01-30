@@ -1,6 +1,6 @@
 import argparse
-from config.settings import Config
-from router.service_router import ServiceRouter
+from valdi.config.settings import Config
+from valdi.router.service_router import ServiceRouter
 
 
 def main():

@@ -1,7 +1,7 @@
-from cli.volume_manager import VolumeManager
-from cli.authenticator import Authenticator
-from cli.initializer import Initializer
-from config.settings import Config
+from valdi.cli.volume_manager import VolumeManager
+from valdi.cli.authenticator import Authenticator
+from valdi.cli.initializer import Initializer
+from valdi.config.settings import Config
 
 
 class ServiceRouter:

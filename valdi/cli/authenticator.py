@@ -5,7 +5,7 @@ import getpass
 import requests
 from pathlib import Path
 from datetime import datetime
-from config.settings import Config
+from valdi.config.settings import Config
 
 
 class Authenticator:
@@ -13,7 +13,7 @@ class Authenticator:
         self.user_email = None
         self.refresh_token = None
         self._access_token = None
-        self.credentials_filepath = Path(__file__).parent.parent / Config.VALDI_CREDENTIALS_FILE
+        self.credentials_filepath = Path(__file__).parent.parent.parent / Config.VALDI_CREDENTIALS_FILE
         if os.path.isfile(self.credentials_filepath):
             self._read_credentials()
             if self._is_token_expired(self.refresh_token):
