@@ -20,7 +20,8 @@ class VolumeManager:
                         return True
             return False
         else:
-            raise RuntimeError('Volume credentials file is missing, this CLI tool has likely not been initialized.')
+            print('This CLI tool appears to be uninitialized. Run "valdi init" first.')
+            sys.exit(1)
 
     @staticmethod
     def _store_volume_access_credentials(volume_name):
