@@ -78,5 +78,5 @@ class VolumeManager:
                 check=True
             )
         except subprocess.CalledProcessError as e:
-            print(f'Error unmounting volume: {e.stderr}')
+            print(f'Error unmounting volume{f": {e.stderr}" if e.stderr is not None else ""}')
             sys.exit(1)
