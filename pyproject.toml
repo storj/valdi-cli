@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "valdi"
-version = "0.2.1"
+version = "0.2.2"
 description = "A command-line utility for managing VALDI cloud resources"
 authors = [{name = "VALDI", email="contact@valdi.ai"}]
 license = { file = "LICENSE" }
