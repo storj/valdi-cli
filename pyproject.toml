@@ -9,7 +9,7 @@ description = "A command-line utility for managing VALDI cloud resources"
 authors = [{name = "VALDI", email="contact@valdi.ai"}]
 license = { file = "LICENSE" }
 readme = "README.md"
-requires-python = ">=3.9"
+requires-python = ">=3.8"
 keywords = ["valdi", "gpu", "cloud", "cli", "storage", "volumes"]
 classifiers = [
     "Development Status :: 3 - Alpha",
