@@ -1,5 +1,6 @@
 import os
 import sys
+import getpass
 import subprocess
 from pathlib import Path
 from valdi.config.settings import Config
@@ -26,7 +27,7 @@ class VolumeManager:
     @staticmethod
     def _store_volume_access_credentials(volume_name):
         access_key = input('Enter access key: ')
-        secret_key = input('Enter secret access key: ')
+        secret_key = getpass.getpass('Enter secret access key: ')
         goofys_credentials_file = Path(Config.GOOFYS_CREDENTIALS_FILE).expanduser()
         with open(goofys_credentials_file, 'a') as f:
             f.write(f'[{volume_name}]\naws_access_key_id = {access_key}\naws_secret_access_key = {secret_key}\n')
