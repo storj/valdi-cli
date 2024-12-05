@@ -1,10 +1,11 @@
 import os
-import jwt
 import json
 import getpass
-import requests
 from pathlib import Path
 from datetime import datetime
+
+import jwt
+import requests
 
 from valdi.config.settings import Config
 
@@ -15,7 +16,7 @@ class Authenticator:
         self.refresh_token = None
         self._access_token = None
         self.credentials_filepath = (
-            Path(__file__).parent.parent.parent / Config.VALDI_CREDENTIALS_FILE
+            Path(__file__).parent.parent.parent / Config.CREDENTIALS_FILE
         )
         if os.path.isfile(self.credentials_filepath):
             self._read_credentials()
@@ -35,7 +36,7 @@ class Authenticator:
 
     def _get_user_info(self):
         response = requests.get(
-            url=f"{Config.VALDI_BASE_URL}/account",
+            url=f"{Config.BASE_URL}/account",
             headers={
                 "Content-Type": "application/json",
                 "Authorization": f"Bearer {self.access_token}",
@@ -54,7 +55,7 @@ class Authenticator:
         account_pass = getpass.getpass("Password: ")
 
         response = requests.post(
-            url=f"{Config.VALDI_BASE_URL}/account/login",
+            url=f"{Config.BASE_URL}/account/login",
             headers={"Content-Type": "application/json"},
             data=json.dumps({"email": self.user_email, "password": account_pass}),
         )
@@ -63,11 +64,11 @@ class Authenticator:
         self.refresh_token = json_response["refresh_token"]
         self._access_token = json_response["access_token"]
 
-        with open(self.credentials_filepath, "w") as f:
+        with open(self.credentials_filepath, "w", encoding="utf8") as f:
             f.write(self.refresh_token)
 
     def _read_credentials(self):
-        with open(self.credentials_filepath, "r") as f:
+        with open(self.credentials_filepath, "r", encoding="utf8") as f:
             self.refresh_token = f.read()
 
     def _renew_access_token(self):
@@ -75,7 +76,7 @@ class Authenticator:
             self._renew_credentials(verbose=True)
         else:
             response = requests.post(
-                url=f"{Config.VALDI_BASE_URL}/account/refresh_token",
+                url=f"{Config.BASE_URL}/account/refresh_token",
                 headers={"Content-Type": "application/json"},
                 data=json.dumps({"token": self.refresh_token}),
             )
@@ -89,5 +90,4 @@ class Authenticator:
         token_expiry = datetime.strptime(str(decoded_token["exp"]), "%Y%m%d%H%M%S")
         if datetime.utcnow() > token_expiry:
             return True
-        else:
-            return False
+        return False

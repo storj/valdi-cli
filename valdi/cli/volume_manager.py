@@ -14,30 +14,31 @@ class VolumeManager:
 
     @staticmethod
     def _volume_access_credentials_are_available(volume_name):
-        goofys_credentials_file = Path(Config.GOOFYS_CREDENTIALS_FILE).expanduser()
+        goofys_credentials_file = Path(Config.Goofys.CREDENTIALS_FILE).expanduser()
         if goofys_credentials_file.exists():
-            with open(goofys_credentials_file, "r") as f:
+            with open(goofys_credentials_file, "r", encoding="utf8") as f:
                 for line in f:
                     if line.strip() == f"[{volume_name}]":
                         return True
             return False
-        else:
-            print('This CLI tool appears to be uninitialized. Run "valdi init" first.')
-            sys.exit(1)
+        print('This CLI tool appears to be uninitialized. Run "valdi init" first.')
+        sys.exit(1)
 
     @staticmethod
     def _store_volume_access_credentials(volume_name):
         access_key = input("Enter access key: ")
         secret_key = getpass.getpass("Enter secret access key: ")
-        goofys_credentials_file = Path(Config.GOOFYS_CREDENTIALS_FILE).expanduser()
-        with open(goofys_credentials_file, "a") as f:
+        goofys_credentials_file = Path(Config.Goofys.CREDENTIALS_FILE).expanduser()
+        with open(goofys_credentials_file, "a", encoding="utf8") as f:
             f.write(
-                f"[{volume_name}]\naws_access_key_id = {access_key}\naws_secret_access_key = {secret_key}\n"
+                f"[{volume_name}]\n"
+                f"aws_access_key_id = {access_key}\n"
+                f"aws_secret_access_key = {secret_key}\n"
             )
 
     def mount_volume(self, prefix_to_mount, mountpoint):
         present_working_dir = Path(__file__)
-        goofys_exe = present_working_dir.parent.parent.parent / Config.GOOFYS_EXE_FILE
+        goofys_exe = present_working_dir.parent.parent.parent / Config.Goofys.EXE_FILE
         mount_point = Path(mountpoint).expanduser()
         if not mount_point.is_absolute():
             print("mountpoint must be a full path")
@@ -54,8 +55,12 @@ class VolumeManager:
                 [
                     goofys_exe,
                     "--endpoint",
-                    Config.VALDI_GATEWAY_URL,
-                    f'{Config.VALDI_GLOBAL_ROOT}:{self.authenticator.user_info["user_id"]}/{prefix_to_mount}',
+                    Config.GATEWAY_URL,
+                    (
+                        f"{Config.GLOBAL_ROOT}:"
+                        f'{self.authenticator.user_info["user_id"]}/'
+                        f"{prefix_to_mount}"
+                    ),
                     mount_point,
                 ],
                 check=True,
