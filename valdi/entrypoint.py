@@ -7,10 +7,12 @@ entrypoint is used for running this package as a CLI tool.
 __copyright__ = "Copyright (C) 2024 Storj Labs, Inc."
 
 import argparse
+import sys
 
-from valdi.cli.volume_manager import VolumeManager
+from valdi.cli import TerminalError
 from valdi.cli.authenticator import Authenticator
 from valdi.cli.initializer import Initializer
+from valdi.cli.volume_manager import make_volume_manager
 
 
 def init(args):
@@ -37,7 +39,7 @@ def main():
     # helper to create shared dependencies for volume subcommands
     def volume(args):
         auth = Authenticator()
-        volume_manager = VolumeManager(auth)
+        volume_manager = make_volume_manager(auth)
         args.command_func(args, volume_manager)
 
     # volume service
@@ -62,7 +64,11 @@ def main():
 
     # route commands
     args = parser.parse_args()
-    args.service_func(args)
+    try:
+        args.service_func(args)
+    except TerminalError as err:
+        print(err)
+        sys.exit(1)
 
 
 if __name__ == "__main__":
