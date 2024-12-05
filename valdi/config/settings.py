@@ -9,19 +9,3 @@ class Config:
     VALDI_BASE_URL = "https://api.valdi.ai"
     VALDI_GLOBAL_ROOT = "valdi"
     GOOFYS_EXE_FILE = "goofys"
-
-    class Service(Enum):
-        VOLUME = "volume"
-        INIT = "init"
-
-    class VolumeCommand(Enum):
-        MOUNT = "mount"
-        UNMOUNT = "unmount"
-
-    class VmCommand(Enum):
-        START = "start"
-        STOP = "stop"
-
-    class Command(Enum):
-        MOUNT = "mount"
-        UNMOUNT = "unmount"

@@ -1,45 +1,68 @@
+#!/usr/bin/env python3
+
+"""
+entrypoint is used for running this package as a CLI tool.
+"""
+
+__copyright__ = "Copyright (C) 2024 Storj Labs, Inc."
+
 import argparse
-from valdi.config.settings import Config
-from valdi.router.service_router import ServiceRouter
+
+from valdi.cli.volume_manager import VolumeManager
+from valdi.cli.authenticator import Authenticator
+from valdi.cli.initializer import Initializer
+
+
+def init(args):
+    Initializer.initialize()
+    print("Successfully initialized")
+
+
+def mount(args, volume_manager):
+    volume_manager.mount_volume(args.volume_name, args.mountpoint)
+
+
+def unmount(args, volume_manager):
+    volume_manager.unmount_volume(args.mountpoint)
 
 
 def main():
     parser = argparse.ArgumentParser(prog="valdi")
-    subparsers = parser.add_subparsers(dest="service", required=True, metavar="service")
+    subparsers = parser.add_subparsers(required=True, metavar="service")
 
-    for service in Config.Service:
-        if service.value == Config.Service.VOLUME.value:
-            service_parser = subparsers.add_parser(
-                service.value, help="Manage detachable volumes"
-            )
-            service_subparsers = service_parser.add_subparsers(
-                dest="cmd", required=True, metavar="command"
-            )
-            for cmd in Config.VolumeCommand:
-                if cmd.value == Config.VolumeCommand.MOUNT.value:
-                    cmd_parser = service_subparsers.add_parser(
-                        cmd.value, help="Mount a detachable volume"
-                    )
-                    cmd_parser.add_argument(
-                        "volume_name", help="Name of volume to mount"
-                    )
-                    cmd_parser.add_argument(
-                        "mountpoint", help="Mount point for your volume"
-                    )
-                elif cmd.value == Config.VolumeCommand.UNMOUNT.value:
-                    cmd_parser = service_subparsers.add_parser(
-                        cmd.value, help="Unmount a detachable volume"
-                    )
-                    cmd_parser.add_argument(
-                        "mountpoint", help="Mount point of volume to unmount"
-                    )
-        elif service.value == "vm":
-            _ = subparsers.add_parser(service.value, help="Manage virtual machines")
-        elif service.value == "init":
-            _ = subparsers.add_parser(service.value, help="Initialize VALDI CLI")
+    # init service
+    init_parser = subparsers.add_parser("init", help="Initialize VALDI CLI")
+    init_parser.set_defaults(service_func=init)
 
+    # helper to create shared dependencies for volume subcommands
+    def volume(args):
+        auth = Authenticator()
+        volume_manager = VolumeManager(auth)
+        args.command_func(args, volume_manager)
+
+    # volume service
+    volume_parser = subparsers.add_parser("volume", help="Manage detachable volumes")
+    volume_parser.set_defaults(service_func=volume)
+    volume_subparsers = volume_parser.add_subparsers(required=True, metavar="command")
+
+    # volume mount command
+    mount_parser = volume_subparsers.add_parser(
+        "mount", help="Mount a detachable volume"
+    )
+    mount_parser.set_defaults(command_func=mount)
+    mount_parser.add_argument("volume_name", help="Name of volume to mount")
+    mount_parser.add_argument("mountpoint", help="Mount point for your volume")
+
+    # volume unmount command
+    unmount_parser = volume_subparsers.add_parser(
+        "unmount", help="Unmount a detachable volume"
+    )
+    unmount_parser.set_defaults(command_func=unmount)
+    unmount_parser.add_argument("mountpoint", help="Mount point of volume to unmount")
+
+    # route commands
     args = parser.parse_args()
-    ServiceRouter.route_to_service(args)
+    args.service_func(args)
 
 
 if __name__ == "__main__":
