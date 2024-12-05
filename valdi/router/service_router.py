@@ -10,7 +10,7 @@ class ServiceRouter:
         if args.service == Config.Service.INIT.value:
             # initialize CLI tool
             Initializer.initialize()
-            print('Successfully initialized')
+            print("Successfully initialized")
         else:
             auth = Authenticator()
             if args.service == Config.Service.VOLUME.value:
@@ -21,9 +21,11 @@ class ServiceRouter:
                 elif args.cmd == Config.Command.UNMOUNT.value:
                     volume_manager.unmount_volume(args.mountpoint)
                 else:
-                    raise RuntimeError(f'Unrecognized command for {args.service} service')
+                    raise RuntimeError(
+                        f"Unrecognized command for {args.service} service"
+                    )
             elif args.service == Config.Service.VM.value:
                 # handle VM commands
-                raise NotImplementedError('VM services not yet implemented')
+                raise NotImplementedError("VM services not yet implemented")
             else:
-                raise RuntimeError('Unrecognized service')
+                raise RuntimeError("Unrecognized service")

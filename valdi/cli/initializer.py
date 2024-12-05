@@ -2,6 +2,7 @@ import os
 import stat
 import requests
 from pathlib import Path
+
 from valdi.config.settings import Config
 
 
@@ -14,7 +15,7 @@ class Initializer:
         if not file_to_check.exists():
             response = requests.get(Config.GOOFYS_URL)
             response.raise_for_status()
-            with open(file_to_check, 'wb') as f:
+            with open(file_to_check, "wb") as f:
                 f.write(response.content)
 
         current_permissions = file_to_check.stat().st_mode
@@ -24,5 +25,5 @@ class Initializer:
 
         goofys_credentials_filepath = Path(Config.GOOFYS_CREDENTIALS_FILE).expanduser()
         os.makedirs(goofys_credentials_filepath.parent, exist_ok=True)
-        with open(goofys_credentials_filepath, 'a'):
+        with open(goofys_credentials_filepath, "a"):
             os.utime(goofys_credentials_filepath, None)
