@@ -115,6 +115,7 @@ class CunoFSVolumeManager:
         with tempfile.TemporaryDirectory(dir=self.path_to_cuno) as td:
             os.makedirs(Path(td) / "creds" / "bindpoint" / "s3" / "bucketstore")
             os.makedirs(Path(td) / "creds" / "bindpoint" / "s3" / "credstore")
+            os.makedirs(Path(td) / "cache")
             with open(Path(td) / "ver", "w", encoding="utf8") as fh:
                 fh.write(Config.CunoFS.VER_FILE)
             with open(
@@ -163,15 +164,13 @@ class CunoFSVolumeManager:
         subproc_env["CUNO_CREDENTIALS"] = (
             self.path_to_cuno / "volumes" / volume_name / "creds"
         )
-        subproc_env["CUNO_OPTIONS"] = "cachehome=" + str(
+        subproc_env["CUNO_OPTIONS"] = "+cachehome=" + str(
             self.path_to_cuno / "volumes" / volume_name / "cache"
         )
         subproc_env["CUNO_BASEDIR"] = self.path_to_cuno / "dist"
         subprocess.run(
             [
                 str(self.path_to_cuno / "dist" / "bin" / "cuno"),
-                "-o",
-                subproc_env["CUNO_OPTIONS"],
                 "mount",
                 mountpoint,
                 "--root",
