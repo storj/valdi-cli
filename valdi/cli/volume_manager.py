@@ -180,6 +180,7 @@ class CunoFSVolumeManager:
                     f"{volume_name}/"
                 ),
                 "--mkdir",
+                "--no-allow-root",
             ],
             check=True,
             env=subproc_env,
